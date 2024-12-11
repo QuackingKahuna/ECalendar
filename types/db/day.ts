@@ -1,0 +1,20 @@
+export type Day = {
+  id: string;
+  cycleId: number;
+  temperature?: string;
+  menstruationStrength?: number;
+  sex?: number;
+  ovarypl?: number;
+  ovarypr?: number;
+  hipp?: number;
+  stomachc?: number;
+  stomacha?: number;
+  fatigue?: number;
+  spinningHead?: number;
+  fertileMocus?: number;
+  sensitiveBreasts?: number;
+  staining?: number;
+  moodiness?: number;
+  cravings?: number;
+  diarrhea?: number;
+};
