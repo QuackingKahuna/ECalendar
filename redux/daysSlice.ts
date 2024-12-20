@@ -3,12 +3,14 @@ import { Day } from "@/types/db/day";
 import { createSlice } from "@reduxjs/toolkit";
 
 export type DaysState = {
-  daysInSelectedMonth: Day[]
+  daysInSelectedMonth: Day[],
+  potentialDays: Day[],
   selectedDay: Day
 }
 
 const initialState: DaysState = {
   daysInSelectedMonth: [],
+  potentialDays: [],
   selectedDay: { id: today(), cycleId: -1 }
 }
 

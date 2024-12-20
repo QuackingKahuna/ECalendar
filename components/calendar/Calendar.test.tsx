@@ -1,9 +1,11 @@
 import { act } from "react";
 import { renderWithProviders } from "@/redux/test-utils";
+import { MENSTRUATION_EXPECTED, MENSTRUATION_MEDIUM, MENSTRUATION_WEAK, POTENTIAL } from "@/consts/colors";
 import Calendar from "./Calendar";
 import { resolveMarkedDatesStyles } from "./Calendar.styles";
 
 jest.mock("expo-sqlite");
+jest.mock("expo-sqlite/kv-store");
 
 const mockGetDayDataForSelectedMonth = jest.fn();
 const mockChangeSelectedDay = jest.fn();
@@ -66,25 +68,57 @@ describe("Calendar test", () => {
 
   describe("styles", () => {
     it("tests merkedDates styles", () => {
+      const potentialDayId = "2024-12-11";
+      const expectedMenstruation = "2024-12-17";
       const markedDatesStyles = resolveMarkedDatesStyles({
         daysInSelectedMonth: [
           { id: "2024-12-09", cycleId: 1, menstruationStrength: 1 },
-          { id: selectedDayId, cycleId: 1, menstruationStrength: 2 }
+          { id: selectedDayId, cycleId: 1, menstruationStrength: 2 },
+          { id: potentialDayId, cycleId: 1, potential: 1 }
         ],
+        expectedMenstruation,
         selectedDay: { id: selectedDayId, cycleId: 1, menstruationStrength: 2 }
       });
 
       expect(markedDatesStyles).toEqual(expect.objectContaining({
         ["2024-12-09"]: {
           customStyles: {
-            container: { backgroundColor: "#f59090" },
+            container: { backgroundColor: MENSTRUATION_WEAK },
             text: { color: "black" }
           }
         },
         [selectedDayId]: {
           selected: true,
           marked: true,
-          dotColor: "#db2727"
+          dotColor: MENSTRUATION_MEDIUM
+        },
+        [potentialDayId]: {
+          customStyles: {
+            container: { backgroundColor: POTENTIAL },
+          }
+        },
+        [expectedMenstruation]: {
+          customStyles: {
+            container: { backgroundColor: MENSTRUATION_EXPECTED },
+          }
+        }
+      }));
+    });
+
+    it("tests that menstruation is not overriden by potential", () => {
+      const markedDatesStyles = resolveMarkedDatesStyles({
+        daysInSelectedMonth: [
+          { id: "2024-12-09", cycleId: 1, menstruationStrength: 1, potential: 1 },
+        ],
+        expectedMenstruation: null,
+        selectedDay: { id: selectedDayId, cycleId: 1 }
+      });
+      expect(markedDatesStyles).toEqual(expect.objectContaining({
+        ["2024-12-09"]: {
+          customStyles: {
+            container: { backgroundColor: MENSTRUATION_WEAK },
+            text: { color: "black" }
+          }
         }
       }));
     });
@@ -96,6 +130,7 @@ const renderCalendar = () => renderWithProviders(<Calendar />, {
     days: {
       daysInSelectedMonth: [],
       selectedDay: { id: selectedDayId, cycleId: 1 },
+      potentialDays: []
     }
   }
 });;

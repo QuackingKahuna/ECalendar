@@ -1,3 +1,4 @@
+import { MENSTRUATION_MEDIUM, MENSTRUATION_STRONG, MENSTRUATION_WEAK } from "@/consts/colors";
 import { ColorValue } from "react-native";
 
 export type MenstruationStrengthColors = {
@@ -7,13 +8,13 @@ export type MenstruationStrengthColors = {
 
 export const getMenstruationStrengthColors = (strength: number | undefined) => {
   if (strength === 1) {
-    return { backgroundColor: "#f59090", textColor: "black" };
+    return { backgroundColor: MENSTRUATION_WEAK, textColor: "black" };
   }
   else if (strength === 2) {
-    return { backgroundColor: "#db2727", textColor: "white" };
+    return { backgroundColor: MENSTRUATION_MEDIUM, textColor: "white" };
   }
   else if (strength === 3) {
-    return { backgroundColor: "#a30303", textColor: "white" };
+    return { backgroundColor: MENSTRUATION_STRONG, textColor: "white" };
   }
 }
 

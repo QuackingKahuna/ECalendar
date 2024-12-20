@@ -9,7 +9,7 @@ export type InitializeSelectedDayDataInput = {
   dispatch: Dispatch<UnknownAction>
 }
 
-export const initializeSelectedDayData = async ({ db, selectedDayId, dispatch }: InitializeSelectedDayDataInput) => {
+export const initializeReduxState = async ({ db, selectedDayId, dispatch }: InitializeSelectedDayDataInput) => {
   const day = await getDay(db, selectedDayId);
   if (day) {
     dispatch(updateSelectedDay(day));

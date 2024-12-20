@@ -1,0 +1,1 @@
+export const EXPECTED_MENSTRUATION_KEY = "expectedMenstruation";

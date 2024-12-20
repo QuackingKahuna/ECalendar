@@ -5,7 +5,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import Calendar from "@/components/calendar/Calendar";
 import MenstruationItem from "@/components/controls/menstruation/MenstruationItem";
 import { RootState } from "@/redux/store";
-import { initializeSelectedDayData } from "./MainPage.functions";
+import { initializeReduxState } from "./MainPage.functions";
 
 export const MainPage = () => {
   const db = useSQLiteContext();
@@ -14,7 +14,7 @@ export const MainPage = () => {
 
   useEffect(() => {
     if (selectedDay.cycleId === -1) {
-      initializeSelectedDayData({ db, selectedDayId: selectedDay.id, dispatch });
+      initializeReduxState({ db, selectedDayId: selectedDay.id, dispatch });
     }
   }, [])
 

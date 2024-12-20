@@ -1,6 +1,7 @@
 export type Day = {
   id: string;
   cycleId: number;
+  potential?: number;
   temperature?: string;
   menstruationStrength?: number;
   sex?: number;

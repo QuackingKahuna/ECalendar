@@ -1,4 +1,4 @@
-import { initializeSelectedDayData } from "./MainPage.functions";
+import { initializeReduxState } from "./MainPage.functions";
 
 const selectedDay = { id: "2024-12-11", cycleId: 1, menstruationStrength: 2 };
 
@@ -12,7 +12,7 @@ jest.mock("@/redux/daysSlice", () => ({
 }));
 
 it("calls updateSelectedDay", async () => {
-  await initializeSelectedDayData({
+  await initializeReduxState({
     db: null as any,
     selectedDayId: selectedDay.id,
     dispatch: jest.fn()

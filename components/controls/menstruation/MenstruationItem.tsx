@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
+import { useSQLiteContext } from "expo-sqlite";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { onOptionPress } from "./MenstruationItem.functions";
@@ -25,8 +25,7 @@ export const MenstruationItem = () => {
               mode="contained"
               style={optionStyles}
               textColor={textColor}
-              onPress={onOptionPress({ item, db, selectedDay, dispatch })
-              }
+              onPress={async () => await onOptionPress({ item, db, selectedDay, dispatch })}
               key={`${index}${selectedDay.menstruationStrength}`}
             >
               {item}

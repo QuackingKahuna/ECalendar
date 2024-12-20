@@ -3,17 +3,23 @@ import { startNewCycle } from "@/functions/db/startNewCycle";
 import { updateSelectedDay } from "@/redux/daysSlice";
 import { updateMenstruationStrength } from "@/functions/db/updateMenstruationStrength";
 import { Day } from "@/types/db/day";
+import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import { getCurrentCycle } from "@/functions/db/getCurrentCycle";
+import { findLastCycles } from "@/functions/db/findLastCycles";
+import { insertPotentialDays } from "@/functions/db/insertPotentialDays";
+import { findPotentialDays } from "@/functions/potential/findPotentialDays";
+import { resolveExpectedMenstruation } from "@/functions/expectedMenstruation/resolveExpectedMenstruation";
 
 export type OptionPressInput = {
-  item: string;
   db: SQLiteDatabase;
+  dispatch: Dispatch<UnknownAction>;
+  item: string;
   selectedDay: Day;
-  dispatch: any;
 }
 
-export const onOptionPress = ({ item, db, selectedDay, dispatch }: OptionPressInput) => async () => {
+export const onOptionPress = async ({ db, dispatch, item, selectedDay }: OptionPressInput) => {
   if (item === "+") {
-    await startNewCycle(db, selectedDay.id);
+    await determinePotentialDaysAndStartNewCycle({ db, selectedDayId: selectedDay.id });
   }
   else {
     let strength = parseInt(item);
@@ -22,5 +28,41 @@ export const onOptionPress = ({ item, db, selectedDay, dispatch }: OptionPressIn
     }
     dispatch(updateSelectedDay({ ...selectedDay, menstruationStrength: strength }));
     await updateMenstruationStrength({ db, strength, selectedDate: selectedDay.id });
+  }
+}
+
+type DeterminePotentialDaysAndStartNewCycleInput = {
+  db: SQLiteDatabase;
+  selectedDayId: string;
+};
+
+const determinePotentialDaysAndStartNewCycle = async ({ db, selectedDayId }: DeterminePotentialDaysAndStartNewCycleInput) => {
+  const currentCycle = await getCurrentCycle(db);
+  await startNewCycle({ db, selectedDate: selectedDayId, currentCycle });
+
+  if (currentCycle) {
+    const lastCycles = await findLastCycles({
+      db,
+      isEven: currentCycle!.isEven ? 0 : 1,
+      numberOfCycles: 3
+    });
+    const potentialDayIds = await findPotentialDays({
+      currentCycleStartDate: currentCycle.startDate,
+      lastCycles
+    });
+    if (potentialDayIds) {
+      try {
+        await insertPotentialDays({ db, dayIds: potentialDayIds, cycleId: currentCycle.id + 1 })
+      }
+      catch (e) {
+        //TODO: check for issues and optimize
+        console.log(e);
+      }
+    }
+
+    await resolveExpectedMenstruation({
+      currentCycleStartDate: currentCycle.startDate,
+      lastCycles
+    });
   }
 }
