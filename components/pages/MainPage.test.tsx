@@ -1,13 +1,13 @@
-import { renderWithProviders } from "@/redux/test-utils";
+import { renderWithProviders } from "@/redux/testUtils";
 import MainPage from "./MainPage";
 
 jest.mock("expo-sqlite");
 jest.mock("@/components/calendar/Calendar");
-jest.mock("@/components/controls/menstruation/MenstruationItem");
+jest.mock("@/components/dayDetail/menstruationItem/MenstruationItem");
 
-const mockInitializeSelectedDayData = jest.fn();
+const mockInitializeReduxState = jest.fn();
 jest.mock("./MainPage.functions", () => ({
-  initializeSelectedDayData: (input: any) => mockInitializeSelectedDayData(input)
+  initializeReduxState: (input: any) => mockInitializeReduxState(input)
 }));
 
 const selectedDayId = "2024-12-11";
@@ -17,12 +17,13 @@ it("initializes selected day data", () => {
     preloadedState: {
       days: {
         selectedDay: { id: selectedDayId, cycleId: -1 },
-        daysInSelectedMonth: []
+        daysInSelectedMonth: [],
+        potentialDays: []
       }
     }
   });
-  expect(mockInitializeSelectedDayData).toHaveBeenCalledTimes(1);
-  expect(mockInitializeSelectedDayData).toHaveBeenCalledWith(expect.objectContaining({
+  expect(mockInitializeReduxState).toHaveBeenCalledTimes(1);
+  expect(mockInitializeReduxState).toHaveBeenCalledWith(expect.objectContaining({
     selectedDayId
   }))
 });

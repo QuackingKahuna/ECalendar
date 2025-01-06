@@ -1,7 +1,7 @@
 import { SQLiteDatabase } from "expo-sqlite";
 import { startNewCycle } from "@/functions/db/startNewCycle";
 import { updateSelectedDay } from "@/redux/daysSlice";
-import { updateMenstruationStrength } from "@/functions/db/updateMenstruationStrength";
+import { updateDay } from "@/functions/db/updateDay";
 import { Day } from "@/types/db/day";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { getCurrentCycle } from "@/functions/db/getCurrentCycle";
@@ -27,7 +27,7 @@ export const onOptionPress = async ({ db, dispatch, item, selectedDay }: OptionP
       strength = 0;
     }
     dispatch(updateSelectedDay({ ...selectedDay, menstruationStrength: strength }));
-    await updateMenstruationStrength({ db, strength, selectedDate: selectedDay.id });
+    await updateDay({ db, dayProp: "menstruationStrength", value: strength, selectedDate: selectedDay.id });
   }
 }
 
@@ -44,7 +44,8 @@ const determinePotentialDaysAndStartNewCycle = async ({ db, selectedDayId }: Det
     const lastCycles = await findLastCycles({
       db,
       isEven: currentCycle!.isEven ? 0 : 1,
-      numberOfCycles: 3
+      numberOfCycles: 3,
+      offset: 1
     });
     const potentialDayIds = await findPotentialDays({
       currentCycleStartDate: currentCycle.startDate,

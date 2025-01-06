@@ -3,8 +3,9 @@ import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useSQLiteContext } from "expo-sqlite";
 import Calendar from "@/components/calendar/Calendar";
-import MenstruationItem from "@/components/controls/menstruation/MenstruationItem";
+import { DayDetail } from "@/components/dayDetail/DayDetail";
 import { RootState } from "@/redux/store";
+import { globalStyles } from "@/styles/container";
 import { initializeReduxState } from "./MainPage.functions";
 
 export const MainPage = () => {
@@ -19,9 +20,9 @@ export const MainPage = () => {
   }, [])
 
   return (
-    <View>
+    <View style={globalStyles.container}>
       <Calendar />
-      <MenstruationItem />
+      <DayDetail />
     </View>
   )
 }

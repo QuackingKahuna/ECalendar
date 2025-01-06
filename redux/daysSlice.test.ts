@@ -4,7 +4,8 @@ import reducer, { DaysState, updateSelectedDay } from "./daysSlice";
 it("tests initial state", () => {
   expect(reducer(undefined, { type: "unknown" })).toEqual({
     daysInSelectedMonth: [],
-    selectedDay: { id: today(), cycleId: -1 }
+    selectedDay: { id: today(), cycleId: -1 },
+    potentialDays: []
   });
 });
 
@@ -15,11 +16,13 @@ it("tests updateSelectedDay", () => {
       { id: "2024-12-10", cycleId: 1, menstruationStrength: 2 },
       { ...selectedDay },
     ],
-    selectedDay: { ...selectedDay }
+    selectedDay: { ...selectedDay },
+    potentialDays: []
   };
 
   selectedDay = { ...selectedDay, menstruationStrength: 2 };
   let firstUpdatedState = {
+    ...previousState,
     daysInSelectedMonth: [
       previousState.daysInSelectedMonth[0],
       { ...selectedDay },
@@ -30,6 +33,7 @@ it("tests updateSelectedDay", () => {
 
   const nextSelectedDay = { id: "2024-12-12", cycleId: 1, menstruationStrength: 3 };
   let secondUpdatedState = {
+    ...firstUpdatedState,
     daysInSelectedMonth: [
       ...firstUpdatedState.daysInSelectedMonth,
       { ...nextSelectedDay }

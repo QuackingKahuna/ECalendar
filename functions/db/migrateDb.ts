@@ -1,4 +1,5 @@
 import { TABLE_CYCLES, TABLE_DAYS } from "@/consts/db";
+import { dayBooleanInfo1 } from "@/types/db/day";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
@@ -10,11 +11,10 @@ export const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
     return;
   }
   if (currentDbVersion === 0) {
-    const booleanColumns = ["menstruationStrength", "sex", "ovarypl", "ovarypr", "hipp", "stomachc", "stomacha", "fatigue", "spinningHead", "fertileMocus", "sensitiveBreasts", "staining", "moodiness", "cravings", "diarrhea"];
     await db.execAsync(`
       PRAGMA journal_mode = 'wal';
       CREATE TABLE ${TABLE_CYCLES} (id INTEGER PRIMARY KEY AUTOINCREMENT, startDate TEXT NOT NULL, endDate TEXT, length INTEGER, isEven INTEGER NOT NULL DEFAULT 0);
-      CREATE TABLE ${TABLE_DAYS} (id TEXT PRIMARY KEY NOT NULL, cycleId INTEGER NOT NULL, temperature REAL, ${booleanColumnsDefinition(booleanColumns)}, FOREIGN KEY(cycleId) REFERENCES cycles(id));
+      CREATE TABLE ${TABLE_DAYS} (id TEXT PRIMARY KEY NOT NULL, cycleId INTEGER NOT NULL, temperature REAL, menstruationStrength INTEGER NOT NULL DEFAULT 0, ${booleanColumnsDefinition(dayBooleanInfo1 as unknown as string[])}, FOREIGN KEY(cycleId) REFERENCES cycles(id));
     `);
     currentDbVersion = 1;
   }

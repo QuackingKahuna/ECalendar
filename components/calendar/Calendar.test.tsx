@@ -1,5 +1,5 @@
 import { act } from "react";
-import { renderWithProviders } from "@/redux/test-utils";
+import { renderWithProviders } from "@/redux/testUtils";
 import { MENSTRUATION_EXPECTED, MENSTRUATION_MEDIUM, MENSTRUATION_WEAK, POTENTIAL } from "@/consts/colors";
 import Calendar from "./Calendar";
 import { resolveMarkedDatesStyles } from "./Calendar.styles";

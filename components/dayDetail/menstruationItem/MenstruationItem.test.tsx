@@ -1,5 +1,5 @@
 import { userEvent } from "@testing-library/react-native";
-import { renderWithProviders } from "@/redux/test-utils";
+import { renderWithProviders } from "@/redux/testUtils";
 import MenstruationItem from "./MenstruationItem";
 import getMenstruationStrengthColors from "@/functions/styles/getMenstruationStrengthColors";
 
@@ -16,22 +16,17 @@ jest.mock("./MenstruationItem.functions", () => {
   };
 });
 
-const mockBtn = jest.fn();
-const mockText = jest.fn();
-jest.mock("react-native-paper", () => {
-  const originalModule = jest.requireActual("react-native-paper");
+const mockBackgroundSwitch = jest.fn();
+jest.mock("@/components/switch/BackgroundSwitch", () => {
+  const originalModule = jest.requireActual("@/components/switch/BackgroundSwitch");
   return {
     ...originalModule,
-    Button: (props: any) => {
-      mockBtn(props);
-      return originalModule.Button.render(props);
-    },
-    Text: (props: any) => {
-      mockText(props);
-      return originalModule.Text.render(props);
-    },
-  };
-})
+    BackgroundSwitch: (input: any) => {
+      mockBackgroundSwitch(input);
+      return originalModule.BackgroundSwitch(input);
+    }
+  }
+});
 
 describe("MenstruationItem test", () => {
   beforeEach(() => {
@@ -55,14 +50,17 @@ describe("MenstruationItem test", () => {
 
   it("tests that selected option is highlighted", () => {
     const selectedStrength = 2;
-    const mItem = renderWithProviders(<MenstruationItem />, {
+    renderWithProviders(<MenstruationItem />, {
       preloadedState: {
         days: {
-          selectedDay: { id: "2024-12-09", cycleId: 1, menstruationStrength: selectedStrength }, daysInSelectedMonth: []
+          selectedDay: { id: "2024-12-09", cycleId: 1, menstruationStrength: selectedStrength }, daysInSelectedMonth: [],
+          potentialDays: []
         }
       }
     });
-    const optionValue2Wrapper = mItem.getAllByTestId("button-container")[selectedStrength];
-    expect(optionValue2Wrapper.props.style.backgroundColor).toEqual(getMenstruationStrengthColors(selectedStrength)!.backgroundColor);
+    expect(mockBackgroundSwitch).toHaveBeenCalledWith(expect.objectContaining({
+      value: true,
+      onColor: getMenstruationStrengthColors(selectedStrength)!.backgroundColor
+    }))
   })
 })

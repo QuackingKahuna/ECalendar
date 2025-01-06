@@ -1,21 +1,16 @@
-export type Day = {
+export type Day = DayBooleanActions & {
   id: string;
   cycleId: number;
-  potential?: number;
   temperature?: string;
   menstruationStrength?: number;
-  sex?: number;
-  ovarypl?: number;
-  ovarypr?: number;
-  hipp?: number;
-  stomachc?: number;
-  stomacha?: number;
-  fatigue?: number;
-  spinningHead?: number;
-  fertileMocus?: number;
-  sensitiveBreasts?: number;
-  staining?: number;
-  moodiness?: number;
-  cravings?: number;
-  diarrhea?: number;
+  potential?: number;
+};
+
+export const dayBooleanInfo1 = ["sex", "ovarypl", "ovarypr", "hipp", "stomachc", "stomacha", "fatigue", "spinningHead", "fertileMocus", "sensitiveBreasts", "staining", "moodiness", "cravings", "diarrhea"] as const;
+
+export const dayBooleanActionKeys = [...dayBooleanInfo1] as const;
+export type DayBooleanActionKeys = typeof dayBooleanActionKeys[number];
+
+export type DayBooleanActions = {
+  [key in DayBooleanActionKeys]?: number
 };

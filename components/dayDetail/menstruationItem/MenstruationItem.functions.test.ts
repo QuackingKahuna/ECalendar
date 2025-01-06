@@ -32,9 +32,9 @@ jest.mock("@/functions/expectedMenstruation/resolveExpectedMenstruation", () => 
   resolveExpectedMenstruation: (input: any) => mockResolveExpectedMenstruation(input)
 }))
 
-const mockUpdateMenstruationStrength = jest.fn();
-jest.mock("@/functions/db/updateMenstruationStrength", () => ({
-  updateMenstruationStrength: (input: any) => mockUpdateMenstruationStrength(input)
+const mockUpdateDay = jest.fn();
+jest.mock("@/functions/db/updateDay", () => ({
+  updateDay: (input: any) => mockUpdateDay(input)
 }));
 
 let onOptionPressInput: OptionPressInput;
@@ -82,8 +82,12 @@ describe("MenstruationItem functions test", () => {
 
   it("tests onOptionPress when unselected value is pressed", async () => {
     await onOptionPress({ ...onOptionPressInput, item: "1" });
-    expect(mockUpdateMenstruationStrength).toHaveBeenCalledTimes(1);
-    expect(mockUpdateMenstruationStrength).toHaveBeenCalledWith(expect.objectContaining({ strength: 1 }));
+    expect(mockUpdateDay).toHaveBeenCalledTimes(1);
+    expect(mockUpdateDay).toHaveBeenCalledWith(expect.objectContaining({
+      dayProp: "menstruationStrength",
+      selectedDate: selectedDayId,
+      value: 1
+    }));
   })
 
   it("tests onOptionPress when already selected value is pressed", async () => {
@@ -92,7 +96,11 @@ describe("MenstruationItem functions test", () => {
       item: "1",
       selectedDay: { ...onOptionPressInput.selectedDay, menstruationStrength: 1 }
     });
-    expect(mockUpdateMenstruationStrength).toHaveBeenCalledTimes(1);
-    expect(mockUpdateMenstruationStrength).toHaveBeenCalledWith(expect.objectContaining({ strength: 0 }));
+    expect(mockUpdateDay).toHaveBeenCalledTimes(1);
+    expect(mockUpdateDay).toHaveBeenCalledWith(expect.objectContaining({
+      dayProp: "menstruationStrength",
+      selectedDate: selectedDayId,
+      value: 0
+    }));
   })
 });
