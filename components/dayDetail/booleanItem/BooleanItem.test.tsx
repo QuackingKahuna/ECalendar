@@ -37,7 +37,7 @@ describe("BooleanItem", () => {
 })
 
 const renderBooleanItem = () => renderWithProviders(
-  <BooleanItem type={type} />,
+  <BooleanItem type={type} tab="menstruation" />,
   {
     preloadedState: {
       days: {

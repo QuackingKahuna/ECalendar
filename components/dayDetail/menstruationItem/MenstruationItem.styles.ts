@@ -35,7 +35,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     width: 140
   },
-  titleColor: {
-    color: "black"
+  titleText: {
+    fontSize: 20,
+    textAlign: "center"
   }
 });

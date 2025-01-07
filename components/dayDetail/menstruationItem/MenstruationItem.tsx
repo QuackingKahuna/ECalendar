@@ -1,5 +1,4 @@
-import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { View, Text } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -18,7 +17,7 @@ export const MenstruationItem = () => {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.title}>
-        <Text variant="headlineSmall" style={styles.titleColor} >Menstruace:</Text>
+        <Text style={styles.titleText} >Menstruace:</Text>
       </View>
       {
         options.map((item, index) => {

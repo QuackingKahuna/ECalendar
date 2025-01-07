@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import daysReducer from "@/redux/daysSlice";
+import signReducer from "@/redux/signSlice";
 
 const rootReducer = combineReducers({
-  days: daysReducer
+  days: daysReducer,
+  sign: signReducer
 })
 
 export const setupStore = (preloadedState?: Partial<RootState>) => {

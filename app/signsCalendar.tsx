@@ -2,12 +2,12 @@ import { View } from "react-native";
 import CalendarWithDayDetailPage from "@/components/pages/calendarWithDayDetailPage/CalendarWithDayDetailPage";
 import { globalStyles } from "@/styles/container";
 
-export const MenstruationCalendar = () => {
+export const SignsCalendar = () => {
   return (
     <View style={globalStyles.container}>
-      <CalendarWithDayDetailPage tab="menstruation" />
+      <CalendarWithDayDetailPage tab="signs" />
     </View>
   );
-}
+};
 
-export default MenstruationCalendar;
+export default SignsCalendar;

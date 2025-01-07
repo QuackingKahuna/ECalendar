@@ -1,19 +1,19 @@
 import { renderWithProviders } from "@/redux/testUtils";
-import MainPage from "./MainPage";
+import CalendarWithDayDetailPage from "./CalendarWithDayDetailPage";
 
 jest.mock("expo-sqlite");
 jest.mock("@/components/calendar/Calendar");
 jest.mock("@/components/dayDetail/menstruationItem/MenstruationItem");
 
 const mockInitializeReduxState = jest.fn();
-jest.mock("./MainPage.functions", () => ({
+jest.mock("./CalendarWithDayDetailPage.functions", () => ({
   initializeReduxState: (input: any) => mockInitializeReduxState(input)
 }));
 
 const selectedDayId = "2024-12-11";
 
 it("initializes selected day data", () => {
-  renderWithProviders(<MainPage />, {
+  renderWithProviders(<CalendarWithDayDetailPage tab="menstruation" />, {
     preloadedState: {
       days: {
         selectedDay: { id: selectedDayId, cycleId: -1 },

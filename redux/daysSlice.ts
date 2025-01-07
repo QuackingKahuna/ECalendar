@@ -1,6 +1,6 @@
 import today from "@/functions/calendar/today";
 import { Day } from "@/types/db/day";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type DaysState = {
   daysInSelectedMonth: Day[],
@@ -18,10 +18,10 @@ const daysSlice = createSlice({
   name: "days",
   initialState,
   reducers: {
-    setDaysInSelectedMonth: (state, action) => {
+    setDaysInSelectedMonth: (state, action: PayloadAction<Day[]>) => {
       state.daysInSelectedMonth = action.payload;
     },
-    updateSelectedDay: (state, action) => {
+    updateSelectedDay: (state, action: PayloadAction<Day>) => {
       const index = state.daysInSelectedMonth.findIndex(day => day.id === action.payload.id);
       if (index !== -1) {
         state.daysInSelectedMonth[index] = action.payload;

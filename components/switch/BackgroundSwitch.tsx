@@ -2,11 +2,12 @@ import { Text, TouchableOpacity } from "react-native";
 import { BackgroundSwitchProps } from "./BackgroundSwitch.types";
 import { globalStyles } from "@/styles/container";
 import { styles } from "./BackgroundSwitch.styles";
+import { SIGN } from "@/consts/colors";
 
 export const BackgroundSwitch = ({
   value,
   onValueChange,
-  onColor = "#9b70ff",
+  onColor = SIGN,
   offColor = "transparent",
   text,
   textColor = "black" }: BackgroundSwitchProps) => {

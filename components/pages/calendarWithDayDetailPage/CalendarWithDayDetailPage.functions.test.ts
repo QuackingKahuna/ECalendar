@@ -1,4 +1,4 @@
-import { initializeReduxState } from "./MainPage.functions";
+import { initializeReduxState } from "./CalendarWithDayDetailPage.functions";
 
 const selectedDay = { id: "2024-12-11", cycleId: 1, menstruationStrength: 2 };
 
