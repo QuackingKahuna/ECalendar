@@ -1,20 +1,24 @@
 import { MENSTRUATION_EXPECTED, POTENTIAL, SIGN } from "@/consts/colors";
+import { diffInDays } from "@/functions/date/diffInDays";
 import getMenstruationStrengthColors from "@/functions/styles/getMenstruationStrengthColors";
+import { markedDateCustomStyle } from "@/styles/calendar";
 import { Day, DayBooleanActionKeys } from "@/types/db/day";
-import { Tab } from "@/types/db/tab";
-import { MarkingProps } from "react-native-calendars/src/calendar/day/marking";
+import { DayDetailTab } from "@/types/dayDetailTab";
+import { PositionInRange } from "@/types/positionInRange";
 import { MarkedDates } from "react-native-calendars/src/types";
+import { getDayFromDayId } from "@/functions/date/getDayFromDayId";
+import { getYearMonthFromDayId } from "@/functions/date/getYearMonthFromDayId";
 
 type ResolveMarkedDatesStylesInput = {
-  daysInSelectedMonth: Day[],
+  daysWithData: Day[],
   expectedMenstruation: string | null,
   selectedDay: Day,
-  tab: Tab
+  tab: DayDetailTab
   selectedSigns: DayBooleanActionKeys[]
 }
 
 export const resolveMarkedDatesStyles = ({
-  daysInSelectedMonth,
+  daysWithData,
   expectedMenstruation,
   selectedDay,
   tab,
@@ -29,13 +33,15 @@ export const resolveMarkedDatesStyles = ({
         });
       }
 
-      daysInSelectedMonth.forEach(day => {
+      daysWithData.forEach((day, index) => {
         if (day.menstruationStrength) {
           const { backgroundColor, textColor } = getMenstruationStrengthColors(day.menstruationStrength)!;
-          markedDates[day.id] = markedDateCustomStyle({ backgroundColor, textColor });
+          const positionInRange = resolvePositionInRange({ range: daysWithData, index, prop: "menstruationStrength" });
+          markedDates[day.id] = markedDateCustomStyle({ backgroundColor, textColor, positionInRange });
         }
         else if (day.potential) {
-          markedDates[day.id] = markedDateCustomStyle({ backgroundColor: POTENTIAL });
+          const positionInRange = resolvePositionInRange({ range: daysWithData, index, prop: "potential" });
+          markedDates[day.id] = markedDateCustomStyle({ backgroundColor: POTENTIAL, positionInRange });
         }
       });
 
@@ -46,16 +52,10 @@ export const resolveMarkedDatesStyles = ({
       };
       break;
     case "signs":
-      daysInSelectedMonth.forEach(day => {
+      daysWithData.forEach(day => {
         selectedSigns.forEach(sign => {
           if (day[sign]) {
-            markedDates[day.id] = {
-              customStyles: {
-                container: {
-                  backgroundColor: SIGN
-                }
-              }
-            };
+            markedDates[day.id] = markedDateCustomStyle({ backgroundColor: SIGN });
           }
         })
       })
@@ -67,21 +67,32 @@ export const resolveMarkedDatesStyles = ({
   return markedDates;
 }
 
-type MarkedDateCustomStyleInput = {
-  backgroundColor: string
-  textColor?: string
+type ResolvePositionInPeriodType = {
+  range: Day[],
+  index: number,
+  prop: keyof Day
 }
 
-const markedDateCustomStyle = ({ backgroundColor, textColor }: MarkedDateCustomStyleInput) => {
-  let res: MarkingProps = {
-    customStyles: {
-      container: {
-        backgroundColor
-      }
-    }
-  }
-  if (textColor) {
-    res.customStyles!.text = { color: textColor }
+const resolvePositionInRange = ({ range, index, prop }: ResolvePositionInPeriodType) => {
+  const previous = index !== 0 ? range[index - 1] : undefined;
+  const current = range[index];
+  const next = index !== range.length - 1 ? range[index + 1] : undefined;
+  // TODO: Provide longer than month range. So far there is a check on first/last day of a month to not show potentially falsy start/end
+  const [year, month] = getYearMonthFromDayId(current.id).split("-");
+  const lastDayInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+
+  // Conditions check for existance of relevant information in previous/next day
+  let res: PositionInRange = "middle";
+  if (getDayFromDayId(current.id) !== "01"
+    && (!previous
+      || !previous[prop]
+      || diffInDays(previous.id, current.id) > 1)) {
+    res = "start";
+  } else if (getDayFromDayId(current.id) !== `${lastDayInMonth}`
+    && (!next
+      || !next[prop]
+      || diffInDays(next.id, current.id) > 1)) {
+    res = "end";
   }
   return res;
 }

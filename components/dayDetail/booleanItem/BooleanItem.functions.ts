@@ -1,5 +1,5 @@
 import { Day, DayBooleanActionKeys } from "@/types/db/day";
-import { Tab } from "@/types/db/tab";
+import { DayDetailTab } from "@/types/dayDetailTab";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { SQLiteDatabase } from "expo-sqlite";
 import { Dispatch } from "react";
@@ -8,7 +8,7 @@ import { updateDay } from "@/functions/db/updateDay";
 import { addSign, removeSign } from "@/redux/signSlice";
 
 type DetermineSelectedInput = {
-  tab: Tab,
+  tab: DayDetailTab,
   type: DayBooleanActionKeys,
   selectedDay: Day,
   selectedSigns: DayBooleanActionKeys[]
@@ -31,7 +31,7 @@ type OnPressInput = {
   dispatch: Dispatch<UnknownAction>,
   selectedDay: Day,
   type: DayBooleanActionKeys,
-  tab: Tab,
+  tab: DayDetailTab,
 }
 
 export const onPress = ({ dispatch, db, selectedDay, type, tab }: OnPressInput) => async (value: boolean) => {

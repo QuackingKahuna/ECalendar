@@ -1,3 +1,4 @@
+import { ITEM_HEIGHT } from "@/consts/item";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -7,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   item: {
     width: "50%",
-    height: 75
+    height: ITEM_HEIGHT
   },
   itemLayout: {
     flexDirection: "row"

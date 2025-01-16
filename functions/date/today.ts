@@ -1,8 +1,8 @@
-import { dateToString } from "./dateToString";
+import { dateToDayId } from "./dateToDayId";
 
 export const today = () => {
   const today = new Date();
-  return dateToString(today);
+  return dateToDayId(today);
 };
 
 export default today;

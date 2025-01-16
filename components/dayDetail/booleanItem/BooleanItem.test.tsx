@@ -41,7 +41,7 @@ const renderBooleanItem = () => renderWithProviders(
   {
     preloadedState: {
       days: {
-        daysInSelectedMonth: [],
+        daysWithData: [],
         selectedDay: { id: selectedDayId, cycleId: 1, fatigue: 1 },
         potentialDays: []
       }

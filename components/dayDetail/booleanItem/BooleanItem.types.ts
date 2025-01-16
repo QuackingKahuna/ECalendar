@@ -1,7 +1,7 @@
 import { DayBooleanActionKeys } from "@/types/db/day";
-import { Tab } from "@/types/db/tab";
+import { DayDetailTab } from "@/types/dayDetailTab";
 
 export type BooleanItemProps = {
-  tab: Tab,
+  tab: DayDetailTab,
   type: DayBooleanActionKeys;
 }

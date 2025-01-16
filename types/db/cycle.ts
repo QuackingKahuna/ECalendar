@@ -1,7 +1,9 @@
+import { DayId } from "./day";
+
 export type Cycle = {
   id: number;
-  startDate: string;
-  endDate?: string;
+  startDate: DayId;
+  endDate?: DayId;
   length?: number;
   isEven: number;
 };

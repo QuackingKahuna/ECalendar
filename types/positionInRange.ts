@@ -1,0 +1,1 @@
+export type PositionInRange = "start" | "middle" | "end";

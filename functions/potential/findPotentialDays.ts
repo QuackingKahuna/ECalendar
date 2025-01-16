@@ -1,7 +1,7 @@
 import { Cycle } from "@/types/db/cycle";
-import { dateToString } from "../calendar/dateToString";
-import { diffInDays } from "../calendar/diffInDays";
-import { addDays } from "../calendar/addDays";
+import { dateToDayId } from "../date/dateToDayId";
+import { diffInDays } from "../date/diffInDays";
+import { addDays } from "../date/addDays";
 
 type FindPotentialDaysInput = {
   currentCycleStartDate: string;
@@ -13,13 +13,13 @@ export const findPotentialDays = async ({ currentCycleStartDate, lastCycles }: F
   const shortestCycleLength = Math.min(...lastCycles.map(cycle => cycle.length!));
   const potentialStart = potentialStarts({ cycleStartDate: currentCycleStartDate, shortestCycleLength });
   const potentialEnd = potentialEnds({ cycleStartDate: currentCycleStartDate, shortestCycleLength });
-  const potentialDayIds = [dateToString(potentialStart)];
+  const potentialDayIds = [dateToDayId(potentialStart)];
   const potentialLength = diffInDays(potentialStart, potentialEnd);
   for (let i = 1; i < potentialLength; i++) {
     var anotherPotentialDay = addDays(new Date(potentialStart), i);
-    potentialDayIds.push(dateToString(anotherPotentialDay));
+    potentialDayIds.push(dateToDayId(anotherPotentialDay));
   }
-  potentialDayIds.push(dateToString(potentialEnd));
+  potentialDayIds.push(dateToDayId(potentialEnd));
   return potentialDayIds;
 }
 

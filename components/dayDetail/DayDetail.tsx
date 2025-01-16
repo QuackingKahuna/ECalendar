@@ -1,18 +1,24 @@
+import React from "react"
 import { View, ScrollView } from "react-native"
 import { dayBooleanActionKeys } from "@/types/db/day"
 import { BooleanItem } from "./booleanItem/BooleanItem"
 import { MenstruationItem } from "./menstruationItem/MenstruationItem"
 import { Separator } from "../Separator"
-import { globalStyles } from "@/styles/container"
+import { globalStyles } from "@/styles/globalStyles"
 import { styles } from "./DayDetail.styles"
-import { Tab } from "@/types/db/tab"
+import { DayDetailTab } from "@/types/dayDetailTab"
+import { TemperatureItem } from "./temperatureItem/TemperatureItem"
 
-export const DayDetail = ({ tab }: { tab: Tab }) => {
+export const DayDetail = ({ tab }: { tab: DayDetailTab }) => {
   return (
     <View style={globalStyles.container}>
       <ScrollView>
         <Separator />
-        {tab === "menstruation" && <MenstruationItem />}
+        {tab === "menstruation" && (<>
+          <MenstruationItem />
+          <Separator />
+          <TemperatureItem />
+        </>)}
         <View style={styles.itemList}>
           {dayBooleanActionKeys.map((item, index) => {
             return (

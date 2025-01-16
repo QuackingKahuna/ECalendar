@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import CalendarWithDayDetailPage from "@/components/pages/calendarWithDayDetailPage/CalendarWithDayDetailPage";
-import { globalStyles } from "@/styles/container";
+import { globalStyles } from "@/styles/globalStyles";
 
 export const SignsCalendar = () => {
   return (

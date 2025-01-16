@@ -53,7 +53,7 @@ describe("MenstruationItem test", () => {
     renderWithProviders(<MenstruationItem />, {
       preloadedState: {
         days: {
-          selectedDay: { id: "2024-12-09", cycleId: 1, menstruationStrength: selectedStrength }, daysInSelectedMonth: [],
+          selectedDay: { id: "2024-12-09", cycleId: 1, menstruationStrength: selectedStrength }, daysWithData: [],
           potentialDays: []
         }
       }

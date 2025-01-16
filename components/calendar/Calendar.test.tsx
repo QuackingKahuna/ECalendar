@@ -3,7 +3,9 @@ import { renderWithProviders } from "@/redux/testUtils";
 import { MENSTRUATION_EXPECTED, MENSTRUATION_MEDIUM, MENSTRUATION_WEAK, POTENTIAL, SIGN } from "@/consts/colors";
 import Calendar from "./Calendar";
 import { resolveMarkedDatesStyles } from "./Calendar.styles";
-import { Tab } from "@/types/db/tab";
+import { DayDetailTab } from "@/types/dayDetailTab";
+import { DayId } from "@/types/db/day";
+import * as DaysSlice from "@/redux/daysSlice";
 
 jest.mock("expo-sqlite");
 jest.mock("expo-sqlite/kv-store");
@@ -31,12 +33,14 @@ jest.mock("react-native-calendars", () => {
   }
 })
 
-let selectedDayId: string;
-let tab: Tab;
+let selectedDayId: DayId;
+let tab: DayDetailTab;
+let month: string;
 
 describe("Calendar test", () => {
   beforeEach(() => {
     selectedDayId = "2024-12-10";
+    month = "2024-12";
     jest.clearAllMocks();
   });
 
@@ -49,7 +53,7 @@ describe("Calendar test", () => {
       renderCalendar();
       expect(mockGetDayDataForSelectedMonth).toHaveBeenCalledTimes(1);
       expect(mockGetDayDataForSelectedMonth).toHaveBeenCalledWith(expect.objectContaining({
-        selectedMonth: "2024-12"
+        selectedMonth: month
       }));
     });
 
@@ -64,24 +68,34 @@ describe("Calendar test", () => {
     });
 
     it("calls for month data on month change", async () => {
+      const year = 2024;
+      const month = 11;
+      const spyOnChangeVisibleMonth = jest.spyOn(DaysSlice, "changeVisibleMonth");
       renderCalendar();
+      expect(spyOnChangeVisibleMonth).toHaveBeenCalledTimes(1);
       expect(mockGetDayDataForSelectedMonth).toHaveBeenCalledTimes(1);
       act(() => {
-        mockCalendarComponent.mock.calls[0][0].onMonthChange({ dateString: "2024-11-01" })
+        mockCalendarComponent.mock.calls[0][0].onMonthChange({ year, month });
       });
+      const newMonth = `${year}-${month}`
+      //After the act, there is a rerender which causes extra call
+      expect(spyOnChangeVisibleMonth).toHaveBeenCalledTimes(3);
+      expect(spyOnChangeVisibleMonth).toHaveBeenCalledWith(newMonth);
       expect(mockGetDayDataForSelectedMonth).toHaveBeenCalledTimes(2);
-      expect(mockGetDayDataForSelectedMonth.mock.calls[1][0].selectedMonth).toEqual("2024-11");
+      expect(mockGetDayDataForSelectedMonth.mock.calls[1][0].selectedMonth).toEqual(newMonth);
     });
 
     describe("styles", () => {
       it("tests markedDates styles", () => {
-        const potentialDayId = "2024-12-11";
+        const potentialDayIdStart = "2024-12-11";
+        const potentialDayIdEnd = "2024-12-12";
         const expectedMenstruation = "2024-12-17";
         const markedDatesStyles = resolveMarkedDatesStyles({
-          daysInSelectedMonth: [
+          daysWithData: [
             { id: "2024-12-09", cycleId: 1, menstruationStrength: 1 },
             { id: selectedDayId, cycleId: 1, menstruationStrength: 2 },
-            { id: potentialDayId, cycleId: 1, potential: 1 }
+            { id: potentialDayIdStart, cycleId: 1, potential: 1 },
+            { id: potentialDayIdEnd, cycleId: 1, potential: 1 }
           ],
           expectedMenstruation,
           selectedDay: { id: selectedDayId, cycleId: 1, menstruationStrength: 2 },
@@ -92,7 +106,12 @@ describe("Calendar test", () => {
         expect(markedDatesStyles).toEqual(expect.objectContaining({
           ["2024-12-09"]: {
             customStyles: {
-              container: { backgroundColor: MENSTRUATION_WEAK },
+              container: {
+                backgroundColor: MENSTRUATION_WEAK,
+                borderBottomRightRadius: 0,
+                borderTopRightRadius: 0,
+                width: 60
+              },
               text: { color: "black" }
             }
           },
@@ -101,9 +120,24 @@ describe("Calendar test", () => {
             marked: true,
             dotColor: MENSTRUATION_MEDIUM
           },
-          [potentialDayId]: {
+          [potentialDayIdStart]: {
             customStyles: {
-              container: { backgroundColor: POTENTIAL },
+              container: {
+                backgroundColor: POTENTIAL,
+                borderBottomRightRadius: 0,
+                borderTopRightRadius: 0,
+                width: 60
+              }
+            }
+          },
+          [potentialDayIdEnd]: {
+            customStyles: {
+              container: {
+                backgroundColor: POTENTIAL,
+                borderBottomLeftRadius: 0,
+                borderTopLeftRadius: 0,
+                width: 60
+              }
             }
           },
           [expectedMenstruation]: {
@@ -116,7 +150,7 @@ describe("Calendar test", () => {
 
       it("tests that menstruation is not overriden by potential", () => {
         const markedDatesStyles = resolveMarkedDatesStyles({
-          daysInSelectedMonth: [
+          daysWithData: [
             { id: "2024-12-09", cycleId: 1, menstruationStrength: 1, potential: 1 },
           ],
           expectedMenstruation: null,
@@ -124,14 +158,14 @@ describe("Calendar test", () => {
           selectedSigns: [],
           tab
         });
-        expect(markedDatesStyles).toEqual(expect.objectContaining({
+        expect(markedDatesStyles).toMatchObject({
           ["2024-12-09"]: {
             customStyles: {
               container: { backgroundColor: MENSTRUATION_WEAK },
               text: { color: "black" }
             }
           }
-        }));
+        });
       });
     });
   });
@@ -143,7 +177,7 @@ describe("Calendar test", () => {
 
     it("tests markedDates styles", () => {
       const markedDatesStyles = resolveMarkedDatesStyles({
-        daysInSelectedMonth: [
+        daysWithData: [
           { id: "2024-12-07", cycleId: 1, sex: 1 },
           { id: selectedDayId, cycleId: 1, sex: 0, fatigue: 1 },
           { id: "2024-12-12", cycleId: 1, ovarypl: 1 },
@@ -173,9 +207,10 @@ describe("Calendar test", () => {
 const renderCalendar = () => renderWithProviders(<Calendar tab={tab} />, {
   preloadedState: {
     days: {
-      daysInSelectedMonth: [],
+      daysWithData: [],
       selectedDay: { id: selectedDayId, cycleId: 1 },
-      potentialDays: []
+      potentialDays: [],
+      visibleMonth: month
     }
   }
 });;

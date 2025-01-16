@@ -1,38 +1,43 @@
-import today from "@/functions/calendar/today";
+import today from "@/functions/date/today";
 import { Day } from "@/types/db/day";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type DaysState = {
-  daysInSelectedMonth: Day[],
+  daysWithData: Day[],
   potentialDays: Day[],
-  selectedDay: Day
+  selectedDay: Day,
+  visibleMonth: string
 }
 
 const initialState: DaysState = {
-  daysInSelectedMonth: [],
+  daysWithData: [],
   potentialDays: [],
-  selectedDay: { id: today(), cycleId: -1 }
+  selectedDay: { id: today(), cycleId: -1 },
+  visibleMonth: today().slice(0, 7)
 }
 
 const daysSlice = createSlice({
   name: "days",
   initialState,
   reducers: {
-    setDaysInSelectedMonth: (state, action: PayloadAction<Day[]>) => {
-      state.daysInSelectedMonth = action.payload;
+    changeVisibleMonth: (state, action: PayloadAction<string>) => {
+      state.visibleMonth = action.payload
+    },
+    setDaysWithData: (state, action: PayloadAction<Day[]>) => {
+      state.daysWithData = action.payload;
     },
     updateSelectedDay: (state, action: PayloadAction<Day>) => {
-      const index = state.daysInSelectedMonth.findIndex(day => day.id === action.payload.id);
+      const index = state.daysWithData.findIndex(day => day.id === action.payload.id);
       if (index !== -1) {
-        state.daysInSelectedMonth[index] = action.payload;
+        state.daysWithData[index] = action.payload;
       }
       else {
-        state.daysInSelectedMonth.push(action.payload);
+        state.daysWithData.push(action.payload);
       }
       state.selectedDay = action.payload;
     }
   },
 });
 
-export const { setDaysInSelectedMonth, updateSelectedDay } = daysSlice.actions;
+export const { changeVisibleMonth, setDaysWithData, updateSelectedDay } = daysSlice.actions;
 export default daysSlice.reducer;

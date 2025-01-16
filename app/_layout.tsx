@@ -17,6 +17,12 @@ export default function RootLayout() {
               title: "Menstruace"
             }} />
           <Tabs.Screen
+            name="temperature"
+            options={{
+              headerTitle: "Graf teploty",
+              title: "Teplota"
+            }} />
+          <Tabs.Screen
             name="signsCalendar"
             options={{
               headerTitle: "Přehled příznaků",

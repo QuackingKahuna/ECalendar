@@ -5,11 +5,11 @@ import { useSQLiteContext } from "expo-sqlite";
 import Calendar from "@/components/calendar/Calendar";
 import { DayDetail } from "@/components/dayDetail/DayDetail";
 import { RootState } from "@/redux/store";
-import { globalStyles } from "@/styles/container";
+import { globalStyles } from "@/styles/globalStyles";
 import { initializeReduxState } from "./CalendarWithDayDetailPage.functions";
-import { Tab } from "@/types/db/tab";
+import { DayDetailTab } from "@/types/dayDetailTab";
 
-export const CalendarWithDayDetailPage = ({ tab }: { tab: Tab }) => {
+export const CalendarWithDayDetailPage = ({ tab }: { tab: DayDetailTab }) => {
   const db = useSQLiteContext();
   const dispatch = useDispatch();
   const { selectedDay } = useSelector((state: RootState) => state.days);

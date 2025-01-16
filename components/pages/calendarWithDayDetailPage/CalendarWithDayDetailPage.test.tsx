@@ -17,8 +17,9 @@ it("initializes selected day data", () => {
     preloadedState: {
       days: {
         selectedDay: { id: selectedDayId, cycleId: -1 },
-        daysInSelectedMonth: [],
-        potentialDays: []
+        daysWithData: [],
+        potentialDays: [],
+        visibleMonth: "2024-12"
       }
     }
   });

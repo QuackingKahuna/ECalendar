@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import getMenstruationStrengthColors from "@/functions/styles/getMenstruationStrengthColors";
 import { Day } from "@/types/db/day";
 
@@ -24,19 +23,3 @@ export const getOptionColors = ({ item, selectedDay }: GetOptionStylesInput): Ge
 
   return { backgroundColor, textColor };
 };
-
-export const styles = StyleSheet.create({
-  itemContainer: {
-    flexDirection: "row",
-    height: 75
-  },
-  title: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 140
-  },
-  titleText: {
-    fontSize: 20,
-    textAlign: "center"
-  }
-});

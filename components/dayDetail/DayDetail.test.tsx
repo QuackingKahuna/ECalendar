@@ -1,6 +1,6 @@
 import { renderWithProviders } from "@/redux/testUtils";
 import DayDetail from "./DayDetail";
-import { Tab } from "@/types/db/tab";
+import { DayDetailTab } from "@/types/dayDetailTab";
 
 jest.mock("expo-sqlite");
 
@@ -9,7 +9,12 @@ jest.mock("./menstruationItem/MenstruationItem", () => ({
   MenstruationItem: (input: any) => mockMenstruationItem(input)
 }));
 
-let tab: Tab;
+const mockTemperatureItem = jest.fn();
+jest.mock("./temperatureItem/TemperatureItem", () => ({
+  TemperatureItem: (input: any) => mockTemperatureItem(input)
+}));
+
+let tab: DayDetailTab;
 
 describe("DayDetail", () => {
   beforeEach(() => {
@@ -24,6 +29,7 @@ describe("DayDetail", () => {
     it("renders expected elements", () => {
       const dayDetail = renderDayDetail();
       expect(mockMenstruationItem).toHaveBeenCalledTimes(1);
+      expect(mockTemperatureItem).toHaveBeenCalledTimes(1);
       expect(dayDetail.getByText("Bolest kyčlí")).toBeDefined();
       expect(dayDetail.getByText("Únava")).toBeDefined();
       expect(dayDetail.getByText("Chutě")).toBeDefined();

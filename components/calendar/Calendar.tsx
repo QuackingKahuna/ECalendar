@@ -8,26 +8,29 @@ import { RootState } from "@/redux/store";
 import { resolveMarkedDatesStyles } from "./Calendar.styles";
 import { changeSelectedDay, getDayDataForSelectedMonth } from "./Calendar.functions";
 import { EXPECTED_MENSTRUATION_KEY } from "@/consts/keyValueStorage";
-import { Tab } from "@/types/db/tab";
+import { DayDetailTab } from "@/types/dayDetailTab";
+import { changeVisibleMonth } from "@/redux/daysSlice";
+import { DayId } from "@/types/db/day";
 
-export const Calendar = ({ tab }: { tab: Tab }) => {
+export const Calendar = ({ tab }: { tab: DayDetailTab }) => {
   const db = useSQLiteContext();
   const dispatch = useDispatch();
-  const { daysInSelectedMonth, selectedDay } = useSelector((state: RootState) => state.days);
+  const { daysWithData, selectedDay, visibleMonth } = useSelector((state: RootState) => state.days);
   const { selectedSigns } = useSelector((state: RootState) => state.sign);
-  const [selectedMonth, setSelectedMonth] = useState<string>(selectedDay.id.slice(0, 7));
   const [expectedMenstruation, setExpectedMenstruation] = useState<string | null>(null);
 
   useEffect(() => {
-    getDayDataForSelectedMonth({ db, selectedMonth, dispatch });
-  }, [selectedMonth]);
+    getDayDataForSelectedMonth({ db, selectedMonth: visibleMonth, dispatch });
+  }, [visibleMonth]);
 
   useEffect(() => {
-    const getExpectedMenstruation = async () => {
-      const value = await KeyValueStorage.getItem(EXPECTED_MENSTRUATION_KEY);
-      setExpectedMenstruation(value);
+    if (tab === "menstruation") {
+      const getExpectedMenstruation = async () => {
+        const value = await KeyValueStorage.getItem(EXPECTED_MENSTRUATION_KEY);
+        setExpectedMenstruation(value);
+      }
+      getExpectedMenstruation();
     }
-    getExpectedMenstruation();
   }, []);
 
   return (
@@ -35,18 +38,23 @@ export const Calendar = ({ tab }: { tab: Tab }) => {
       <CalendarComponent
         onDayPress={(day: DateData) => changeSelectedDay({
           db,
-          selectedDayId: day.dateString,
+          selectedDayId: day.dateString as DayId,
           dispatch
         })}
-        onMonthChange={(month: DateData) => setSelectedMonth(month.dateString.slice(0, 7))}
+        onMonthChange={(month: DateData) => {
+          dispatch(changeVisibleMonth(`${month.year}-${month.month}`));
+        }}
         markingType={"custom"}
         markedDates={resolveMarkedDatesStyles({
-          daysInSelectedMonth,
           expectedMenstruation,
+          daysWithData: daysWithData,
           selectedDay,
           selectedSigns,
           tab
         })}
+        firstDay={1}
+        enableSwipeMonths
+        initialDate={`${visibleMonth}-01`}
       />
     </View>
   )

@@ -1,8 +1,6 @@
-import { Day } from "@/types/db/day";
 import { SQLiteDatabase } from "expo-sqlite";
+import getDays from "./getDays";
 
-export const getDay = async (db: SQLiteDatabase, selectedDate: string) => {
-  return await db.getFirstAsync<Day>(`SELECT * FROM days WHERE id = ?`, [selectedDate]);
+export const getDay = async (db: SQLiteDatabase, dayId: string) => {
+  return (await getDays(db, [dayId]))[0];
 }
-
-export default getDay;

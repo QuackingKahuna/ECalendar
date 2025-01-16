@@ -3,7 +3,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { useDispatch, useSelector } from "react-redux";
 import { BackgroundSwitch } from "@/components/switch/BackgroundSwitch";
 import { RootState } from "@/redux/store";
-import { globalStyles } from "@/styles/container";
+import { globalStyles } from "@/styles/globalStyles";
 import { determineSelected, getItemName, onPress } from "./BooleanItem.functions"
 import { BooleanItemProps } from "./BooleanItem.types";
 

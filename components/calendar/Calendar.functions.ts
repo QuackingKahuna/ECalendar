@@ -1,12 +1,13 @@
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit"
 import { SQLiteDatabase } from "expo-sqlite"
 import { getDay } from "@/functions/db/getDay"
-import { setDaysInSelectedMonth, updateSelectedDay } from "@/redux/daysSlice"
+import { setDaysWithData, updateSelectedDay } from "@/redux/daysSlice"
 import { getDaysInMonth } from "@/functions/db/getDaysInMonth"
+import { DayId } from "@/types/db/day"
 
 type ChangeSelectedDayInput = {
   db: SQLiteDatabase
-  selectedDayId: string
+  selectedDayId: DayId
   dispatch: Dispatch<UnknownAction>
 }
 
@@ -27,5 +28,5 @@ type GetDayDataForSelectedMonthInput = {
 }
 
 export const getDayDataForSelectedMonth = async ({ db, selectedMonth, dispatch }: GetDayDataForSelectedMonthInput) => {
-  dispatch(setDaysInSelectedMonth(await getDaysInMonth(db, selectedMonth)));
+  dispatch(setDaysWithData(await getDaysInMonth(db, selectedMonth)));
 }

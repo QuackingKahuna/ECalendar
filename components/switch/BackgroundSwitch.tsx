@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity } from "react-native";
 import { BackgroundSwitchProps } from "./BackgroundSwitch.types";
-import { globalStyles } from "@/styles/container";
+import { globalStyles } from "@/styles/globalStyles";
 import { styles } from "./BackgroundSwitch.styles";
 import { SIGN } from "@/consts/colors";
 
