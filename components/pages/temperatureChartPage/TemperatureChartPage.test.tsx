@@ -21,11 +21,12 @@ const mockGetDaysReturn = [
 ];
 const mockGetDays = jest.fn().mockReturnValue(mockGetDaysReturn);
 jest.mock("@/functions/db/getDays", () => ({
-  getDays: (input: any) => mockGetDays(input)
+  getDays: (input1: any, input2: any) => mockGetDays(input1, input2)
 }));
 
 const temperatureData1: TemperatureChartData = { day: "2025-01-02", temperature: 36.34 };
-const temperatureData2: TemperatureChartData = { day: "2025-01-17", temperature: 36.7 };
+const temperatureData2: TemperatureChartData = { day: "2025-01-04", temperature: undefined };
+const temperatureData3: TemperatureChartData = { day: "2025-01-17", temperature: 36.7 };
 
 describe("TemperatureChartPage", () => {
   beforeEach(() => {
@@ -34,9 +35,10 @@ describe("TemperatureChartPage", () => {
 
   it("initializes TemperatureChart", () => {
     renderTemperatureChartPage();
-    expect(mockTemperatureChart).toHaveBeenCalledTimes(1);
+    //useEffect causes second call
+    expect(mockTemperatureChart).toHaveBeenCalledTimes(2);
     expect(mockTemperatureChart).toHaveBeenCalledWith(expect.objectContaining({
-      data: [temperatureData1, temperatureData2]
+      data: [temperatureData1, temperatureData2, temperatureData3]
     }));
   });
 
@@ -46,9 +48,9 @@ describe("TemperatureChartPage", () => {
     expect(mockGetDays).toHaveBeenCalledTimes(0);
     expect(spyOnSetDaysWithData).toHaveBeenCalledTimes(0);
     const newRange = ["2025-01-04", "2025-01-05", "2025-01-06"];
-    mockDatePicker.mock.calls[0][0].onDateRangeChange!(newRange);
+    await mockDatePicker.mock.calls[0][0].onDateRangeChange(newRange);
     expect(mockGetDays).toHaveBeenCalledTimes(1);
-    expect(mockGetDays).toHaveBeenCalledWith(newRange);
+    expect(mockGetDays).toHaveBeenCalledWith(undefined, newRange);
     expect(spyOnSetDaysWithData).toHaveBeenCalledTimes(1);
     expect(spyOnSetDaysWithData).toHaveBeenCalledWith(mockGetDaysReturn);
   })
@@ -58,9 +60,9 @@ const renderTemperatureChartPage = () => renderWithProviders(<TemperatureChartPa
   preloadedState: {
     days: {
       daysWithData: [
-        { id: temperatureData1.day, temperature: temperatureData1.temperature, cycleId: 1, },
-        { id: "2025-01-04", cycleId: 1, sex: 1 },
-        { id: temperatureData2.day, cycleId: 1, temperature: temperatureData2.temperature },
+        { id: temperatureData1.day, cycleId: 1, temperature: temperatureData1.temperature, },
+        { id: temperatureData2.day, cycleId: 1, temperature: temperatureData2.temperature, sex: 1 },
+        { id: temperatureData3.day, cycleId: 1, temperature: temperatureData3.temperature },
       ],
       potentialDays: [],
       selectedDay: { id: "2025-01-16", cycleId: 1, menstruationStrength: 1 },

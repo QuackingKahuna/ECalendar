@@ -3,7 +3,7 @@ import { resolveExpectedMenstruation } from "./resolveExpectedMenstruation";
 jest.mock("expo-sqlite/kv-store");
 
 const mockAddDays = jest.fn().mockReturnValue(new Date("2023-01-23"));
-jest.mock("@/functions/calendar/addDays", () => ({
+jest.mock("@/functions/date/addDays", () => ({
   addDays: (date, averageLength) => mockAddDays(date, averageLength)
 }));
 

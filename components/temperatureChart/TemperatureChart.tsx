@@ -29,7 +29,8 @@ export const TemperatureChart = ({ data }: TemperatureChartProps) => {
       yKeys={["temperature"]}
       axisOptions={{ font: chartLabelFont }}
       domain={{ y: [36.2, 37.1] }}
-      chartPressState={chartPressState}
+      // TemperatureChartData type has day (x) as DayId, initialized state should provide "" option also
+      chartPressState={chartPressState as any}
     >
       {({ points }) => (
         <>

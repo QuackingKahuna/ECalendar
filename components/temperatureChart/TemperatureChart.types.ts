@@ -1,7 +1,7 @@
 import { DayId } from "@/types/db/day"
 
 export type TemperatureChartData = {
-  day: DayId | "",
+  day: DayId,
   temperature: number | undefined
 }
 

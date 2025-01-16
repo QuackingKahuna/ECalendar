@@ -1,3 +1,4 @@
+import { getYearMonthFromDayId } from "@/functions/date/getYearMonthFromDayId";
 import today from "@/functions/date/today";
 import { Day } from "@/types/db/day";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -13,7 +14,7 @@ const initialState: DaysState = {
   daysWithData: [],
   potentialDays: [],
   selectedDay: { id: today(), cycleId: -1 },
-  visibleMonth: today().slice(0, 7)
+  visibleMonth: getYearMonthFromDayId(today())
 }
 
 const daysSlice = createSlice({

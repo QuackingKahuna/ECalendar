@@ -1,7 +1,7 @@
 import { today } from "./today";
-import { dateToString } from "./dateToString";
+import { dateToDayId } from "./dateToDayId";
 
 it("tests today format", () => {
   const testToday = new Date();
-  expect(today()).toBe(dateToString(testToday));
+  expect(today()).toBe(dateToDayId(testToday));
 })

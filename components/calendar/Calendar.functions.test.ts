@@ -7,10 +7,10 @@ jest.mock("@/functions/db/getDay", () => ({
 }));
 
 const mockUpdateSelectedDay = jest.fn();
-const mockSetDaysInSelectedMonth = jest.fn();
+const mockSetDaysWithData = jest.fn();
 jest.mock("@/redux/daysSlice", () => ({
   updateSelectedDay: (input: any) => mockUpdateSelectedDay(input),
-  setDaysInSelectedMonth: (input: any) => mockSetDaysInSelectedMonth(input)
+  setDaysWithData: (input: any) => mockSetDaysWithData(input)
 }))
 
 const getDaysInMonthOutput = [
@@ -38,6 +38,6 @@ it("getDayDataForSelectedMonth calls getDaysInMonth and setDaysInSelectedMonth",
   await getDayDataForSelectedMonth({ db, selectedMonth, dispatch: jest.fn() });
   expect(mockGetDaysInMonth).toHaveBeenCalledTimes(1);
   expect(mockGetDaysInMonth).toHaveBeenCalledWith(db, selectedMonth);
-  expect(mockSetDaysInSelectedMonth).toHaveBeenCalledTimes(1);
-  expect(mockSetDaysInSelectedMonth).toHaveBeenCalledWith(getDaysInMonthOutput);
+  expect(mockSetDaysWithData).toHaveBeenCalledTimes(1);
+  expect(mockSetDaysWithData).toHaveBeenCalledWith(getDaysInMonthOutput);
 });

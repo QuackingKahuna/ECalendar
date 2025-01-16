@@ -1,6 +1,8 @@
 import { renderWithProviders } from "@/redux/testUtils";
 import { TemperatureItem } from "./TemperatureItem";
 
+jest.mock("expo-sqlite")
+
 let temperature: number;
 
 describe("TemperatureItem", () => {
@@ -12,7 +14,7 @@ describe("TemperatureItem", () => {
     const sut = renderTemperatureItem();
     expect(sut.getByText("Teplota:")).toBeDefined();
     expect(sut.getByText("°C")).toBeDefined();
-    expect(sut.getByText(`${temperature}`)).toBeDefined();
+    expect(sut.getByDisplayValue(`${temperature}`)).toBeDefined();
   })
 });
 
