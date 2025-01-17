@@ -22,7 +22,7 @@ export const TemperatureItem = () => {
   return (
     <ItemWithTitle title="Teplota:">
       <Separator orientation="vertical" />
-      <View style={[globalStyles.container, globalStyles.itemDirection, globalStyles.center]}>
+      <View style={[globalStyles.itemDirection, globalStyles.center]}>
         <TextInput
           style={[globalStyles.container, globalStyles.itemTitleText]}
           inputMode="decimal"

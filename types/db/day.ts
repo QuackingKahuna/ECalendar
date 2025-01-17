@@ -17,7 +17,9 @@ export type Day = DayBooleanActions & {
 
 export const dayBooleanInfo1 = ["sex", "ovarypl", "ovarypr", "hipp", "stomachc", "stomacha", "fatigue", "spinningHead", "fertileMocus", "sensitiveBreasts", "staining", "moodiness", "cravings", "diarrhea"] as const;
 
-export const dayBooleanActionKeys = [...dayBooleanInfo1] as const;
+export const sexp = "sexp" as const;
+
+export const dayBooleanActionKeys = [...dayBooleanInfo1, sexp] as const;
 export type DayBooleanActionKeys = typeof dayBooleanActionKeys[number];
 
 export type DayBooleanActions = {

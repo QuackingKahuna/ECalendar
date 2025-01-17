@@ -11,6 +11,7 @@ import { EXPECTED_MENSTRUATION_KEY } from "@/consts/keyValueStorage";
 import { DayDetailTab } from "@/types/dayDetailTab";
 import { changeVisibleMonth } from "@/redux/daysSlice";
 import { DayId } from "@/types/db/day";
+import { getYearMonthFromDayId } from "@/functions/date/getYearMonthFromDayId";
 
 export const Calendar = ({ tab }: { tab: DayDetailTab }) => {
   const db = useSQLiteContext();
@@ -42,12 +43,12 @@ export const Calendar = ({ tab }: { tab: DayDetailTab }) => {
           dispatch
         })}
         onMonthChange={(month: DateData) => {
-          dispatch(changeVisibleMonth(`${month.year}-${month.month}`));
+          dispatch(changeVisibleMonth(getYearMonthFromDayId(month.dateString as DayId)));
         }}
         markingType={"custom"}
         markedDates={resolveMarkedDatesStyles({
           expectedMenstruation,
-          daysWithData: daysWithData,
+          daysWithData,
           selectedDay,
           selectedSigns,
           tab

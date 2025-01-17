@@ -17,7 +17,7 @@ export const BackgroundSwitch = ({
       { backgroundColor: value ? onColor : offColor }]}
       onPress={() => onValueChange(!value)}
     >
-      <Text style={[styles.title, { color: textColor }]}>{text}</Text>
+      <Text style={[globalStyles.itemTitleText, { color: textColor }]}>{text}</Text>
     </TouchableOpacity>
   );
 }

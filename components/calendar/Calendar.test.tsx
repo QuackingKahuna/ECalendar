@@ -75,7 +75,7 @@ describe("Calendar test", () => {
       expect(spyOnChangeVisibleMonth).toHaveBeenCalledTimes(1);
       expect(mockGetDayDataForSelectedMonth).toHaveBeenCalledTimes(1);
       act(() => {
-        mockCalendarComponent.mock.calls[0][0].onMonthChange({ year, month });
+        mockCalendarComponent.mock.calls[0][0].onMonthChange({ dateString: `${year}-${month}-01` });
       });
       const newMonth = `${year}-${month}`
       //After the act, there is a rerender which causes extra call

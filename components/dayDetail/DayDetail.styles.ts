@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row"
   },
   item: {
-    width: "50%",
+    width: "33.33%",
     height: ITEM_HEIGHT
   },
   itemLayout: {

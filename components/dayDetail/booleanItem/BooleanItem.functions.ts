@@ -80,6 +80,8 @@ export const getItemName = (item: DayBooleanActionKeys): string => {
       return "Chutě";
     case "diarrhea":
       return "Průjem";
+    case "sexp":
+      return "Bolest při sexu";
     default:
       const exhaustiveCheck: never = item;
       return "should not happen";

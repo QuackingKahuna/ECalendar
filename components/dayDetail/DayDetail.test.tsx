@@ -14,6 +14,11 @@ jest.mock("./temperatureItem/TemperatureItem", () => ({
   TemperatureItem: (input: any) => mockTemperatureItem(input)
 }));
 
+const mockDetailTitle = jest.fn();
+jest.mock("@/components/dayDetail/detailTitle/DetailTitle", () => ({
+  DetailTitle: (input: any) => mockDetailTitle(input)
+}));
+
 let tab: DayDetailTab;
 
 describe("DayDetail", () => {
@@ -28,6 +33,7 @@ describe("DayDetail", () => {
 
     it("renders expected elements", () => {
       const dayDetail = renderDayDetail();
+      expect(mockDetailTitle).toHaveBeenCalledTimes(1);
       expect(mockMenstruationItem).toHaveBeenCalledTimes(1);
       expect(mockTemperatureItem).toHaveBeenCalledTimes(1);
       expect(dayDetail.getByText("Bolest kyčlí")).toBeDefined();

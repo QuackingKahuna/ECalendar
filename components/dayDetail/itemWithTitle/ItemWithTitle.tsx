@@ -5,7 +5,7 @@ import { ItemTitleProps } from "./ItemTitle.types";
 
 export const ItemWithTitle = ({ title, children }: ItemTitleProps) => {
   return (
-    <View style={styles.itemContainer}>
+    <View style={globalStyles.itemContainer}>
       <View style={styles.itemTitle}>
         <Text style={globalStyles.itemTitleText} >{title}</Text>
       </View>

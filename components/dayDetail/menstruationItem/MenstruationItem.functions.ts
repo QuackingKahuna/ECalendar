@@ -2,7 +2,7 @@ import { SQLiteDatabase } from "expo-sqlite";
 import { startNewCycle } from "@/functions/db/startNewCycle";
 import { updateSelectedDay } from "@/redux/daysSlice";
 import { updateDay } from "@/functions/db/updateDay";
-import { Day } from "@/types/db/day";
+import { Day, DayId } from "@/types/db/day";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { getCurrentCycle } from "@/functions/db/getCurrentCycle";
 import { findLastCycles } from "@/functions/db/findLastCycles";
@@ -33,7 +33,7 @@ export const onOptionPress = async ({ db, dispatch, item, selectedDay }: OptionP
 
 type DeterminePotentialDaysAndStartNewCycleInput = {
   db: SQLiteDatabase;
-  selectedDayId: string;
+  selectedDayId: DayId;
 };
 
 const determinePotentialDaysAndStartNewCycle = async ({ db, selectedDayId }: DeterminePotentialDaysAndStartNewCycleInput) => {

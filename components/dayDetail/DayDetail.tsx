@@ -8,26 +8,29 @@ import { globalStyles } from "@/styles/globalStyles"
 import { styles } from "./DayDetail.styles"
 import { DayDetailTab } from "@/types/dayDetailTab"
 import { TemperatureItem } from "./temperatureItem/TemperatureItem"
+import { DetailTitle } from "./detailTitle/DetailTitle"
 
 export const DayDetail = ({ tab }: { tab: DayDetailTab }) => {
   return (
     <View style={globalStyles.container}>
+      {tab === "menstruation" && <DetailTitle />}
+      <Separator />
       <ScrollView>
-        <Separator />
         {tab === "menstruation" && (<>
           <MenstruationItem />
           <Separator />
           <TemperatureItem />
+          <Separator />
         </>)}
         <View style={styles.itemList}>
           {dayBooleanActionKeys.map((item, index) => {
             return (
               <View key={index} style={styles.item}>
-                <Separator />
                 <View style={[globalStyles.container, styles.itemLayout]}>
                   <BooleanItem key={item} type={item} tab={tab} />
-                  {index % 2 === 0 && <Separator orientation="vertical" />}
+                  {index % 3 !== 2 && <Separator orientation="vertical" />}
                 </View>
+                <Separator />
               </View>)
           })}
         </View>

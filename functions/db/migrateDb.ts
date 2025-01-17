@@ -1,9 +1,9 @@
 import { TABLE_CYCLES, TABLE_DAYS } from "@/consts/db";
-import { dayBooleanInfo1 } from "@/types/db/day";
+import { dayBooleanInfo1, sexp } from "@/types/db/day";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
-  const DATABASE_VERSION = 2;
+  const DATABASE_VERSION = 3;
   let { user_version: currentDbVersion } = await db.getFirstAsync(
     'PRAGMA user_version'
   ) as { user_version: number };
@@ -21,6 +21,10 @@ export const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
   if (currentDbVersion === 1) {
     await db.execAsync(`ALTER TABLE ${TABLE_DAYS} ADD COLUMN ${booleanColumnsDefinition(["potential"])}`);
     currentDbVersion = 2;
+  }
+  if (currentDbVersion === 2) {
+    await db.execAsync(`ALTER TABLE ${TABLE_DAYS} ADD COLUMN ${booleanColumnsDefinition([sexp])}`);
+    currentDbVersion = 3;
   }
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
 }
