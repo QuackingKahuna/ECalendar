@@ -1,6 +1,5 @@
-import { Separator } from "@/components/Separator";
+import { Separator } from "@/components/separator/Separator";
 import { RootState } from "@/redux/store";
-import { globalStyles } from "@/styles/globalStyles";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { View, TextInput, Text } from "react-native";
@@ -22,9 +21,9 @@ export const TemperatureItem = () => {
   return (
     <ItemWithTitle title="Teplota:">
       <Separator orientation="vertical" />
-      <View style={[globalStyles.itemDirection, globalStyles.center]}>
+      <View style={styles.inputContainer}>
         <TextInput
-          style={[globalStyles.container, globalStyles.itemTitleText]}
+          style={styles.input}
           inputMode="decimal"
           onChange={(e) => {
             setTemperature(e.nativeEvent.text);
@@ -32,7 +31,7 @@ export const TemperatureItem = () => {
           onSubmitEditing={onSubmit({ db, dispatch, selectedDay, temperature })}
           value={temperature}
         />
-        <Text style={[globalStyles.itemTitleText, styles.unitIndent]}>°C</Text>
+        <Text style={styles.unitIndent}>°C</Text>
       </View>
     </ItemWithTitle >
   );

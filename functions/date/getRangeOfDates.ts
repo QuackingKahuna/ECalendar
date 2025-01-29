@@ -8,7 +8,7 @@ type RangeOfDaysInput = {
   endDate: DayId;
 }
 
-export const getRangeOfDays = ({ startDate, endDate }: RangeOfDaysInput) => {
+export const getRangeOfDates = ({ startDate, endDate }: RangeOfDaysInput) => {
   const res = [startDate];
   const current = new Date(startDate);
   const end = new Date(endDate);

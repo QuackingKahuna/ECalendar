@@ -1,1 +1,1 @@
-export const ITEM_HEIGHT = 60;   
+export const ITEM_HEIGHT = 65;   

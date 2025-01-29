@@ -4,7 +4,7 @@ import { globalStyles } from "@/styles/globalStyles";
 
 export const MenstruationCalendar = () => {
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container, globalStyles.background]}>
       <CalendarWithDayDetailPage tab="menstruation" />
     </View>
   );

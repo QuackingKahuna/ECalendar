@@ -9,25 +9,42 @@ import { findLastCycles } from "@/functions/db/findLastCycles";
 import { insertPotentialDays } from "@/functions/db/insertPotentialDays";
 import { findPotentialDays } from "@/functions/potential/findPotentialDays";
 import { resolveExpectedMenstruation } from "@/functions/expectedMenstruation/resolveExpectedMenstruation";
+import { diffInDays } from "@/functions/date/diffInDays";
+import { Alert } from "react-native";
 
-export type OptionPressInput = {
-  db: SQLiteDatabase;
-  dispatch: Dispatch<UnknownAction>;
-  item: string;
-  selectedDay: Day;
+export type OptionPressInput = UpdateMenstruationStrengthInput & {
+  daysWithData: Day[];
 }
 
-export const onOptionPress = async ({ db, dispatch, item, selectedDay }: OptionPressInput) => {
-  if (item === "+") {
-    await determinePotentialDaysAndStartNewCycle({ db, selectedDayId: selectedDay.id });
+export const onOptionPress = async ({
+  db,
+  daysWithData,
+  dispatch,
+  item,
+  selectedDay
+}: OptionPressInput) => {
+  const menstruationDays = daysWithData.filter(day => day.menstruationStrength !== 0);
+  const lastMenstruationDay = menstruationDays[menstruationDays.length - 1];
+  if (!lastMenstruationDay || diffInDays(lastMenstruationDay.id, selectedDay.id) > 7) {
+    Alert.alert(
+      'Nový cyklus',
+      'Přeješ si začít nový cyklus?',
+      [{
+        text: 'Ne',
+        style: 'cancel',
+        onPress: async () => {
+          await updateMenstruationStrength({ item, selectedDay, db, dispatch });
+        },
+      }, {
+        text: 'Ano',
+        onPress: async () => {
+          await determinePotentialDaysAndStartNewCycle({ db, selectedDayId: selectedDay.id })
+          await updateMenstruationStrength({ item, selectedDay, db, dispatch });
+        }
+      }]);
   }
   else {
-    let strength = parseInt(item);
-    if (selectedDay.menstruationStrength === strength) {
-      strength = 0;
-    }
-    dispatch(updateSelectedDay({ ...selectedDay, menstruationStrength: strength }));
-    await updateDay({ db, dayProp: "menstruationStrength", value: strength, selectedDate: selectedDay.id });
+    await updateMenstruationStrength({ item, selectedDay, db, dispatch });
   }
 }
 
@@ -66,4 +83,25 @@ const determinePotentialDaysAndStartNewCycle = async ({ db, selectedDayId }: Det
       lastCycles
     });
   }
+}
+
+type UpdateMenstruationStrengthInput = {
+  db: SQLiteDatabase;
+  dispatch: Dispatch<UnknownAction>;
+  item: 1 | 2 | 3;
+  selectedDay: Day;
+}
+
+const updateMenstruationStrength = async ({ item, selectedDay, db, dispatch }: UpdateMenstruationStrengthInput) => {
+  let strength: 0 | 1 | 2 | 3 = item;
+  if (selectedDay.menstruationStrength === strength) {
+    strength = 0;
+  }
+  dispatch(updateSelectedDay({ ...selectedDay, menstruationStrength: strength }));
+  await updateDay({
+    db,
+    dayProp: "menstruationStrength",
+    value: strength,
+    selectedDate: selectedDay.id
+  });
 }

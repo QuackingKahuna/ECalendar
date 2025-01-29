@@ -1,13 +1,16 @@
-import { Cycle } from "@/types/db/cycle";
 import { SQLiteDatabase } from "expo-sqlite";
+import { getCycles } from "./getCycles";
 
-type FindLastCyclesInput = {
+type FindLastCyclesInput = FindLastCyclesParams & {
   db: SQLiteDatabase,
+}
+
+export type FindLastCyclesParams = {
   isEven: number,
   numberOfCycles: number,
   offset?: number
 }
 
-export const findLastCycles = async ({ db, isEven, numberOfCycles, offset = 0 }: FindLastCyclesInput) => {
-  return await db.getAllAsync<Cycle>(`SELECT * FROM cycles WHERE isEven = ? ORDER BY id DESC LIMIT ? OFFSET ?`, [isEven, numberOfCycles, offset]);
+export const findLastCycles = async ({ db, isEven, numberOfCycles, offset }: FindLastCyclesInput) => {
+  return getCycles({ db, params: { isEven, numberOfCycles, offset } });
 }

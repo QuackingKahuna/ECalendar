@@ -1,8 +1,22 @@
 import getMenstruationStrengthColors from "@/functions/styles/getMenstruationStrengthColors";
 import { Day } from "@/types/db/day";
+import { StyleSheet } from "react-native";
+import { globalStyles } from "@/styles/globalStyles";
+
+export const styles = StyleSheet.create({
+  iconContainer: {
+    ...globalStyles.center,
+    flexDirection: "row",
+    maxHeight: 40
+  },
+  optionContainer: {
+    flex: 1,
+    flexDirection: "row",
+  }
+});
 
 type GetOptionStylesInput = {
-  item: string;
+  item: 1 | 2 | 3;
   selectedDay: Day;
 }
 
@@ -12,10 +26,7 @@ export const getOptionColors = ({ item, selectedDay }: GetOptionStylesInput): Ge
   let textColor = "black";
   let backgroundColor = "transparent";
 
-  if (item === "+") {
-    backgroundColor = "#a2fca3";
-  }
-  if (item === selectedDay.menstruationStrength?.toString()) {
+  if (item === selectedDay.menstruationStrength) {
     const optionColors = getMenstruationStrengthColors(selectedDay.menstruationStrength)!;
     backgroundColor = optionColors.backgroundColor;
     textColor = optionColors.textColor;

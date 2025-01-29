@@ -1,8 +1,13 @@
+import { SetStateAction } from "react"
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit"
 import { SQLiteDatabase } from "expo-sqlite"
+import KeyValueStorage from "expo-sqlite/kv-store"
+import { EXPECTED_MENSTRUATION_KEY } from "@/consts/keyValueStorage"
+import { addDays } from "@/functions/date/addDays"
 import { getDay } from "@/functions/db/getDay"
+import { getDays } from "@/functions/db/getDays"
+import { toNumericId } from "@/functions/db/toNumericId"
 import { setDaysWithData, updateSelectedDay } from "@/redux/daysSlice"
-import { getDaysInMonth } from "@/functions/db/getDaysInMonth"
 import { DayId } from "@/types/db/day"
 
 type ChangeSelectedDayInput = {
@@ -17,7 +22,11 @@ export const changeSelectedDay = async ({ db, selectedDayId, dispatch }: ChangeS
     dispatch(updateSelectedDay(dayFromDb));
   }
   else {
-    dispatch(updateSelectedDay({ id: selectedDayId, cycleId: 0 }));
+    dispatch(updateSelectedDay({
+      id: selectedDayId,
+      numericId: toNumericId(selectedDayId),
+      cycleId: 0
+    }));
   }
 }
 
@@ -28,5 +37,13 @@ type GetDayDataForSelectedMonthInput = {
 }
 
 export const getDayDataForSelectedMonth = async ({ db, selectedMonth, dispatch }: GetDayDataForSelectedMonthInput) => {
-  dispatch(setDaysWithData(await getDaysInMonth(db, selectedMonth)));
+  const from = toNumericId(addDays(new Date(`${selectedMonth}`), -6));
+  const [year, month] = selectedMonth.split("-");
+  const to = toNumericId(addDays(new Date(Number(year), Number(month), 0), 6));
+  dispatch(setDaysWithData(await getDays({ db, params: { from, to } })));
+}
+
+export const getExpectedMenstruation = async (setExpectedMenstruation: React.Dispatch<SetStateAction<string | null>>) => {
+  const value = await KeyValueStorage.getItem(EXPECTED_MENSTRUATION_KEY);
+  setExpectedMenstruation(value);
 }

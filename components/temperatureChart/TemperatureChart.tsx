@@ -1,9 +1,11 @@
 import React from "react";
-import { CartesianChart, Line, useChartPressState } from "victory-native"
+import { CartesianChart, Line, useChartPressState, AreaRange } from "victory-native"
 import { TemperatureChartProps } from "./TemperatureChart.types"
 import { Circle, Text, useFont } from "@shopify/react-native-skia";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { DayId } from "@/types/db/day";
+import { POTENTIAL } from "@/consts/colors";
+import { determineTemperaturePotentialArea } from "./TemperatureChart.functions";
 
 const f = require("@/assets/fonts/SpaceMono-Regular.ttf");
 
@@ -32,14 +34,18 @@ export const TemperatureChart = ({ data }: TemperatureChartProps) => {
       // TemperatureChartData type has day (x) as DayId, initialized state should provide "" option also
       chartPressState={chartPressState as any}
     >
-      {({ points }) => (
+      {({ points, chartBounds }) => (
         <>
-          <Text x={100} y={40} text={value} font={highlightedTextFont} />
+          <AreaRange
+            points={determineTemperaturePotentialArea({ data: points.temperature, chartBounds })}
+            color={POTENTIAL}
+          />
           <Line points={points.temperature} color="black" strokeWidth={1} />
+          <Text x={100} y={40} text={value} font={highlightedTextFont} />
           {isActive && (<Tooltip x={chartPressState.x.position} y={chartPressState.y.temperature.position} />)}
         </>
       )}
-    </CartesianChart>
+    </CartesianChart >
   )
 }
 

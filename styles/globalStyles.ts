@@ -2,6 +2,9 @@ import { ITEM_HEIGHT } from "@/consts/item";
 import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
+  background: {
+    backgroundColor: "white",
+  },
   container: {
     flex: 1,
   },
@@ -15,10 +18,10 @@ export const globalStyles = StyleSheet.create({
     height: ITEM_HEIGHT
   },
   itemTitleText: {
-    fontSize: 18,
+    fontSize: 17,
     textAlign: "center"
   },
-  itemDirection: {
+  rowDirection: {
     flexDirection: "row",
   }
 });

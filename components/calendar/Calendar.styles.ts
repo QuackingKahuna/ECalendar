@@ -1,13 +1,11 @@
+import { MarkedDates } from "react-native-calendars/src/types";
 import { MENSTRUATION_EXPECTED, POTENTIAL, SIGN } from "@/consts/colors";
 import { diffInDays } from "@/functions/date/diffInDays";
 import getMenstruationStrengthColors from "@/functions/styles/getMenstruationStrengthColors";
 import { markedDateCustomStyle } from "@/styles/calendar";
-import { Day, DayBooleanActionKeys } from "@/types/db/day";
 import { DayDetailTab } from "@/types/dayDetailTab";
+import { Day, DayBooleanActionKeys } from "@/types/db/day";
 import { PositionInRange } from "@/types/positionInRange";
-import { MarkedDates } from "react-native-calendars/src/types";
-import { getDayFromDayId } from "@/functions/date/getDayFromDayId";
-import { getYearMonthFromDayId } from "@/functions/date/getYearMonthFromDayId";
 
 type ResolveMarkedDatesStylesInput = {
   daysWithData: Day[],
@@ -77,21 +75,12 @@ const resolvePositionInRange = ({ range, index, prop }: ResolvePositionInPeriodT
   const previous = index !== 0 ? range[index - 1] : undefined;
   const current = range[index];
   const next = index !== range.length - 1 ? range[index + 1] : undefined;
-  // TODO: Provide longer than month range. So far there is a check on first/last day of a month to not show potentially falsy start/end
-  const [year, month] = getYearMonthFromDayId(current.id).split("-");
-  const lastDayInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
 
   // Conditions check for existance of relevant information in previous/next day
   let res: PositionInRange = "middle";
-  if (getDayFromDayId(current.id) !== "01"
-    && (!previous
-      || !previous[prop]
-      || diffInDays(previous.id, current.id) > 1)) {
+  if (!previous || !previous[prop] || diffInDays(previous.id, current.id) > 1) {
     res = "start";
-  } else if (getDayFromDayId(current.id) !== `${lastDayInMonth}`
-    && (!next
-      || !next[prop]
-      || diffInDays(next.id, current.id) > 1)) {
+  } else if (!next || !next[prop] || diffInDays(next.id, current.id) > 1) {
     res = "end";
   }
   return res;

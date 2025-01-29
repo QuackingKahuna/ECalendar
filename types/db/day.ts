@@ -9,17 +9,18 @@ export type DayId = `${YYYY}-${MM}-${DD}`
 //TODO: add numeric id representation "2024-01-01" => 20240101 so the records can be easily ordered
 export type Day = DayBooleanActions & {
   id: DayId;
+  numericId: number;
   cycleId: number;
   temperature?: number;
   menstruationStrength?: number;
   potential?: number;
 };
 
-export const dayBooleanInfo1 = ["sex", "ovarypl", "ovarypr", "hipp", "stomachc", "stomacha", "fatigue", "spinningHead", "fertileMocus", "sensitiveBreasts", "staining", "moodiness", "cravings", "diarrhea"] as const;
+export const dayBooleanInfo = ["sex", "ovarypl", "ovarypr", "hipp", "stomachc", "stomacha", "fatigue", "spinningHead", "fertileMocus", "sensitiveBreasts", "staining", "moodiness", "cravings", "diarrhea"] as const;
 
 export const sexp = "sexp" as const;
 
-export const dayBooleanActionKeys = [...dayBooleanInfo1, sexp] as const;
+export const dayBooleanActionKeys = [...dayBooleanInfo, sexp] as const;
 export type DayBooleanActionKeys = typeof dayBooleanActionKeys[number];
 
 export type DayBooleanActions = {

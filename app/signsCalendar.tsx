@@ -4,7 +4,7 @@ import { globalStyles } from "@/styles/globalStyles";
 
 export const SignsCalendar = () => {
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container, globalStyles.background]}>
       <CalendarWithDayDetailPage tab="signs" />
     </View>
   );

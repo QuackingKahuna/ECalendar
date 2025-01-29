@@ -1,7 +1,8 @@
+import { TemperatureChartData } from "@/components/temperatureChart/TemperatureChart.types";
 import * as DaysSlice from "@/redux/daysSlice";
 import { renderWithProviders } from "@/redux/testUtils";
-import { TemperatureChartData } from "@/components/temperatureChart/TemperatureChart.types";
 import TemperatureChartPage from "./TemperatureChartPage";
+import { toNumericId } from "@/functions/db/toNumericId";
 
 jest.mock("expo-sqlite");
 
@@ -15,13 +16,13 @@ jest.mock("@/components/datePicker/DatePicker", () => ({
   DatePicker: (input: any) => mockDatePicker(input)
 }));
 
-const mockGetDaysReturn = [
+const mockGetCyclesReturn = [
   { id: "2025-01-02", cycleId: 1, menstruationStrength: 1 },
   { id: "2025-01-17", cycleId: 1, menstruationStrength: 1 }
 ];
-const mockGetDays = jest.fn().mockReturnValue(mockGetDaysReturn);
-jest.mock("@/functions/db/getDays", () => ({
-  getDays: (input1: any, input2: any) => mockGetDays(input1, input2)
+const mockGetCycles = jest.fn().mockReturnValue(mockGetCyclesReturn);
+jest.mock("@/functions/db/getCycles", () => ({
+  getCycles: (input1: any) => mockGetCycles(input1)
 }));
 
 const temperatureData1: TemperatureChartData = { day: "2025-01-02", temperature: 36.34 };
@@ -41,31 +42,18 @@ describe("TemperatureChartPage", () => {
       data: [temperatureData1, temperatureData2, temperatureData3]
     }));
   });
-
-  it("calls getDays and setDaysWithData on range select", async () => {
-    const spyOnSetDaysWithData = jest.spyOn(DaysSlice, "setDaysWithData");
-    renderTemperatureChartPage();
-    expect(mockGetDays).toHaveBeenCalledTimes(0);
-    expect(spyOnSetDaysWithData).toHaveBeenCalledTimes(0);
-    const newRange = ["2025-01-04", "2025-01-05", "2025-01-06"];
-    await mockDatePicker.mock.calls[0][0].onDateRangeChange(newRange);
-    expect(mockGetDays).toHaveBeenCalledTimes(1);
-    expect(mockGetDays).toHaveBeenCalledWith(undefined, newRange);
-    expect(spyOnSetDaysWithData).toHaveBeenCalledTimes(1);
-    expect(spyOnSetDaysWithData).toHaveBeenCalledWith(mockGetDaysReturn);
-  })
 });
 
 const renderTemperatureChartPage = () => renderWithProviders(<TemperatureChartPage />, {
   preloadedState: {
     days: {
       daysWithData: [
-        { id: temperatureData1.day, cycleId: 1, temperature: temperatureData1.temperature, },
-        { id: temperatureData2.day, cycleId: 1, temperature: temperatureData2.temperature, sex: 1 },
-        { id: temperatureData3.day, cycleId: 1, temperature: temperatureData3.temperature },
+        { id: temperatureData1.day, cycleId: 1, temperature: temperatureData1.temperature, numericId: toNumericId(temperatureData1.day) },
+        { id: temperatureData2.day, cycleId: 1, temperature: temperatureData2.temperature, sex: 1, numericId: toNumericId(temperatureData2.day) },
+        { id: temperatureData3.day, cycleId: 1, temperature: temperatureData3.temperature, numericId: toNumericId(temperatureData3.day) },
       ],
       potentialDays: [],
-      selectedDay: { id: "2025-01-16", cycleId: 1, menstruationStrength: 1 },
+      selectedDay: { id: "2025-01-16", numericId: 20250116, cycleId: 1, menstruationStrength: 1 },
       visibleMonth: "2025-16"
     }
   }

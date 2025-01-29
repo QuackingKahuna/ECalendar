@@ -4,7 +4,7 @@ import TemperatureChartPage from "@/components/pages/temperatureChartPage/Temper
 
 export const Temperature = () => {
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container, globalStyles.background]}>
       <TemperatureChartPage />
     </View>
   )

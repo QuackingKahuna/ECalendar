@@ -1,38 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { DatePicker } from '@/components/datePicker/DatePicker';
+import { View, ScrollView } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { setDaysWithData } from '@/redux/daysSlice';
-import { getDays } from '@/functions/db/getDays';
-import { mapTemperatureData } from './TemperatureChartPage.functions';
+import { formatDay } from '@/functions/date/formatDay';
+import { getAllCycles, updateTemperatureData } from './TemperatureChartPage.functions';
 import { TemperatureChartData } from '@/components/temperatureChart/TemperatureChart.types';
 import { TemperatureChart } from '@/components/temperatureChart/TemperatureChart';
 import { globalStyles } from '@/styles/globalStyles';
-import { DayId } from '@/types/db/day';
+import { Cycle } from '@/types/db/cycle';
+import today from '@/functions/date/today';
+import { List } from '@/components/list/List';
+import BackgroundSwitch from '@/components/switch/BackgroundSwitch';
+import { Separator } from '@/components/separator/Separator';
+import { styles } from './TemperatureChartPage.styles';
 
 
 export const TemperatureChartPage = () => {
   const db = useSQLiteContext();
-  const dispatch = useDispatch();
-  const { daysWithData } = useSelector((state: RootState) => state.days);
-  const [selectedRange, setSelectedRange] = useState<DayId[]>(daysWithData?.map(day => day.id) || []);
-  const [temperatureData, setTemperatureData] = useState<TemperatureChartData[]>(mapTemperatureData({ daysWithData, selectedRange }));
+  const [temperatureData, setTemperatureData] = useState<TemperatureChartData[]>([{ day: today(), temperature: undefined }]);
+  const [cycles, setCycles] = useState<Cycle[]>([]);
+  const [cycle, setCycle] = useState<Cycle | null>(null);
 
   useEffect(() => {
-    setTemperatureData(mapTemperatureData({ daysWithData, selectedRange }));
-  }, [daysWithData]);
+    getAllCycles({ db, setCycles, setCycle });
+  }, []);
+
+  useEffect(() => {
+    if (cycle) {
+      updateTemperatureData({ db, cycle, setTemperatureData });
+    }
+  }, [cycle]);
 
   return (
     <View style={globalStyles.container}>
-      <TemperatureChart data={temperatureData} />
-      <DatePicker onDateRangeChange={
-        async (newRange) => {
-          setSelectedRange(newRange);
-          dispatch(setDaysWithData(await getDays(db, newRange)));
-        }
-      } />
+      <View style={styles.chartHeight}>
+        <TemperatureChart data={temperatureData} />
+      </View>
+      <Separator color='#000000' addShadow />
+      <ScrollView>
+        <List
+          columns={2}
+          items={cycles.map(c => ({
+            columnWidth: 1,
+            component: <BackgroundSwitch
+              value={c.id === cycle?.id}
+              onValueChange={() => { setCycle(c) }}
+              text={`${formatDay(c.startDate)} - ${formatDay(c.endDate ?? today())}`}
+              useShadow
+            />
+          }))}
+        />
+      </ScrollView>
     </View>
   )
 }

@@ -3,6 +3,7 @@ import { getDay } from "@/functions/db/getDay";
 import { getCurrentCycle } from "@/functions/db/getCurrentCycle";
 import { TABLE_DAYS } from "@/consts/db";
 import { Day, DayId } from "@/types/db/day";
+import { toNumericId } from "./toNumericId";
 
 export type UpdateDayInput<T extends keyof Day> = {
   db: SQLiteDatabase,
@@ -19,6 +20,7 @@ export const updateDay = async ({ db, dayProp, value, selectedDate }: UpdateDayI
   }
   else {
     const currentCycle = await getCurrentCycle(db);
-    await db.runAsync(`INSERT INTO ${TABLE_DAYS} (id, cycleId, ${dayProp}) VALUES (?, ?, ?)`, [selectedDate, currentCycle!.id, value ?? null]);
+    const numericId = toNumericId(selectedDate);
+    await db.runAsync(`INSERT INTO ${TABLE_DAYS} (id, numericId, cycleId, ${dayProp}) VALUES (?, ?, ?, ?)`, [selectedDate, numericId, currentCycle!.id, value ?? null]);
   }
 }
